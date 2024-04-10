@@ -1,0 +1,6 @@
+streamlit
+streamlit-pills
+llama-index
+llama-hub
+langchain
+pypdf
