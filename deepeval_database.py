@@ -64,11 +64,11 @@ class DeepEvalDatabase:
                 print(f"Error in inserting data from {json_file_path}:", e)
 
 if __name__ == "__main__":
-    hostname = "<host>"
-    database = "<database>"
-    username = "<username>"
-    password = "<password>"
-    port = <port number>
+    hostname = os.environ['HOSTNAME']
+    database = os.environ['DATABASE']
+    username = os.environ['USERNAME']
+    password = os.environ['PASSWORD']
+    port = os.environ['PORT']
 
     deepeval_db = DeepEvalDatabase(hostname, database, username, password, port)
     deepeval_db.connection()
