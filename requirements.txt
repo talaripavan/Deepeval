@@ -1,6 +1,6 @@
-streamlit
-streamlit-pills
+pytest
+deepeval 
 llama-index
-llama-hub
-langchain
-pypdf
+python-dotenv
+llama-index-vector-stores-milvus
+psycopg2
