@@ -31,17 +31,17 @@ class DeepEvalDatabase:
         except psycopg2.Error as e:
             print("Error in connecting:", e)
             
-    def rename_files_to_json(self,directory):
-        renamed_files = []
-        for filename in os.listdir(directory):
-            if not filename.endswith(".json"):
-                new_filename = os.path.splitext(filename)[0] + ".json"
-                try:
-                    os.rename(os.path.join(directory, filename), os.path.join(directory, new_filename))
-                    renamed_files.append(new_filename) 
-                except OSError as e:
-                    print(f"Error renaming {filename}: {e}")
-        return renamed_files
+    def rename_file_to_json(self,directory):
+    # Reading the files present in directory
+        files = os.listdir(directory)
+    # Reading the files with the time , when they are created  
+        files_with_timestamps = [(file, os.stat(os.path.join(directory, file)).st_birthtime) for file in files]
+        most_recent_file = max(files_with_timestamps, key=lambda x: x[1])[0]
+    # It just add the filename to {.json} 
+        new_filename = os.path.splitext(most_recent_file)[0] + ".json"
+        new_file_path = os.path.join(directory, new_filename)
+        os.rename(os.path.join(directory, most_recent_file), new_file_path)
+        return new_file_path  
 
     def insert_data(self, json_file_path):
         with open(json_file_path, "r") as file:
@@ -64,6 +64,7 @@ class DeepEvalDatabase:
                 print(f"Error in inserting data from {json_file_path}:", e)
 
 if __name__ == "__main__":
+    
     hostname = os.environ['HOSTNAME']
     database = os.environ['DATABASE']
     username = os.environ['USERNAME']
@@ -72,9 +73,5 @@ if __name__ == "__main__":
 
     deepeval_db = DeepEvalDatabase(hostname, database, username, password, port)
     deepeval_db.connection()
-
-    renamed_filenames = deepeval_db.rename_files_to_json(directory_path)
-    for filename in renamed_filenames:
-        json_file_path = os.path.join(directory_path, filename)
-        deepeval_db.insert_data(json_file_path)
-
+    json_file_path = deepeval_db.rename_file_to_json(directory_path)
+    deepeval_db.insert_data(json_file_path)
