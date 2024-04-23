@@ -27,6 +27,14 @@ from dotenv import load_dotenv
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
+from deepeval_database import DeepEvalDatabase
+
+hostname = os.environ['HOSTNAME']
+database = os.environ['DATABASE']
+username = os.environ['USERNAME']
+password = os.environ['PASSWORD']
+port = os.environ['PORT']
+
 
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core import VectorStoreIndex,StorageContext
@@ -43,27 +51,26 @@ index = VectorStoreIndex.from_documents(documents, storage_context=storage_conte
 llm = OpenAI(model="gpt-3.5-turbo")
 rag_application = index.as_query_engine(llm=llm)
 
+    
 file_path = "deepEval_datasets/evaluation_data/test1.json"
 with open(file_path, "r") as json_file:
     json_data = json.load(json_file)
-
-
+    
 @pytest.mark.parametrize(
-    "input_output_pair",
+    "input_output_pair", 
     json_data,
 )
 def test_llamaindex(input_output_pair: Dict):
     input = input_output_pair.get("input", None)
     expected_output = input_output_pair.get("expected_output", None)
     response_object = rag_application.query(input)
-
-
+    
     if response_object is not None:
         actual_output = response_object.response
         retrieval_context = [node.get_content() for node in response_object.source_nodes]
-
     actual_output = actual_output
     retrieval_context = retrieval_context
+    
     test_case = LLMTestCase(
         input=input,
         actual_output=actual_output,
@@ -71,11 +78,14 @@ def test_llamaindex(input_output_pair: Dict):
         expected_output=expected_output
     )
     assert_test(test_case, evaluation_metrics)
+
+import deepeval
+
+@deepeval.on_test_run_end
+def function_to_be_called_after_test_run():
+    directory_path = os.environ['DEEPEVAL_RESULTS_FOLDER']
     deepeval_db = DeepEvalDatabase(hostname, database, username, password, port)
     deepeval_db.connection()
-    directory_path = os.environ['DEEPEVAL_RESULTS_FOLDER']
-    renamed_filenames = deepeval_db.rename_files_to_json(directory_path)
-    for filename in renamed_filenames:
-        json_file_path = os.path.join(directory_path, filename)
-        deepeval_db.insert_data(json_file_path)
-
+    json_file_path = deepeval_db.rename_file_to_json(directory_path)
+    deepeval_db.insert_data(json_file_path)
+    print("Test finished Pavan")
