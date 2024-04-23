@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-directory_path = "./deepeval_test_results"
+directory_path = os.environ['DEEPEVAL_RESULTS_FOLDER']
 
 class DeepEvalDatabase:
     def __init__(self, hostname, database, username, password, port):
