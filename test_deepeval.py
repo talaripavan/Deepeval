@@ -71,3 +71,11 @@ def test_llamaindex(input_output_pair: Dict):
         expected_output=expected_output
     )
     assert_test(test_case, evaluation_metrics)
+    deepeval_db = DeepEvalDatabase(hostname, database, username, password, port)
+    deepeval_db.connection()
+    directory_path = os.environ['DEEPEVAL_RESULTS_FOLDER']
+    renamed_filenames = deepeval_db.rename_files_to_json(directory_path)
+    for filename in renamed_filenames:
+        json_file_path = os.path.join(directory_path, filename)
+        deepeval_db.insert_data(json_file_path)
+
