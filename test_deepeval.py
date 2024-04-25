@@ -1,22 +1,39 @@
+""" We can use ragas, deepeval [metrics] for our RAG Evaluation """
+
 import pytest
 import os
 import json
 from typing import Dict
 from deepeval import assert_test
 from deepeval.metrics import BiasMetric
+from deepeval.metrics.ragas import (
+    RAGASContextualPrecisionMetric,
+    RAGASFaithfulnessMetric,
+    RAGASContextualRecallMetric,
+    RAGASAnswerRelevancyMetric,
+)
+from deepeval.test_case import LLMTestCase
+''' 
 from deepeval.metrics import FaithfulnessMetric
 from deepeval.metrics import AnswerRelevancyMetric
 from deepeval.metrics import ContextualRecallMetric
 from deepeval.metrics import ContextualPrecisionMetric
-from deepeval.test_case import LLMTestCase
+
 bias = BiasMetric(threshold=0.5)
 # Reason behind commenting out metric is expected_output cannot be None
 contextual_precision = ContextualPrecisionMetric(threshold=0.5)
 contextual_recall = ContextualRecallMetric(threshold=0.5)
 answer_relevancy = AnswerRelevancyMetric(threshold=0.5)
 faithfulness = FaithfulnessMetric(threshold=0.5)
+'''
+#bias = BiasMetric(threshold=0.5)
+contextual_precision = RAGASContextualPrecisionMetric(threshold=0.5)
+contextual_recall = RAGASContextualRecallMetric(threshold=0.5)
+answer_relevancy = RAGASAnswerRelevancyMetric(threshold=0.5)
+faithfulness = RAGASFaithfulnessMetric(threshold=0.5)
+
 evaluation_metrics = [
-  bias,
+  #bias,
   contextual_precision,
   contextual_recall,
   answer_relevancy,
@@ -107,8 +124,9 @@ def test_llamaindex(input_output_pair: Dict):
         expected_output=expected_output
     )
     assert_test(test_case, evaluation_metrics)
-
-
+# TODO :- 
+# Connect with the database. 
+"""
 import deepeval
 @deepeval.on_test_run_end
 def function_to_be_called_after_test_run():
@@ -118,6 +136,6 @@ def function_to_be_called_after_test_run():
     json_file_path = deepeval_db.rename_file_to_json(directory_path)
     deepeval_db.insert_data(json_file_path)
     print("Test finished Pavan")
-
+"""
 
 
