@@ -1,4 +1,4 @@
-# This code is used to create a database , insert the data from the results of unit testcases.
+# This code is used to create a database , insert the data from the results of unit testcases and store it into PostgresSQL Database .
 
 import psycopg2
 import json
