@@ -1,4 +1,4 @@
-""" We can use ragas, deepeval [metrics] for our RAG Evaluation """
+""" We can use ragas and deepeval [metrics] for our RAG Evaluation """
 
 import pytest
 import os
