@@ -13,20 +13,21 @@ from deepeval.metrics.ragas import (
     RAGASAnswerRelevancyMetric,
 )
 from deepeval.test_case import LLMTestCase
-''' 
+
+''' # Using Deepeval Metrics 
 from deepeval.metrics import FaithfulnessMetric
 from deepeval.metrics import AnswerRelevancyMetric
 from deepeval.metrics import ContextualRecallMetric
 from deepeval.metrics import ContextualPrecisionMetric
 
 bias = BiasMetric(threshold=0.5)
-# Reason behind commenting out metric is expected_output cannot be None
 contextual_precision = ContextualPrecisionMetric(threshold=0.5)
 contextual_recall = ContextualRecallMetric(threshold=0.5)
 answer_relevancy = AnswerRelevancyMetric(threshold=0.5)
 faithfulness = FaithfulnessMetric(threshold=0.5)
+bias = BiasMetric(threshold=0.5)
 '''
-#bias = BiasMetric(threshold=0.5)
+
 contextual_precision = RAGASContextualPrecisionMetric(threshold=0.5)
 contextual_recall = RAGASContextualRecallMetric(threshold=0.5)
 answer_relevancy = RAGASAnswerRelevancyMetric(threshold=0.5)
